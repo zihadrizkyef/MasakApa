@@ -11,6 +11,10 @@
         <action
             android:id="@+id/splashFragment_to_listFoodFragment"
             app:destination="@id/listFoodFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/no_anim"
+            app:popEnterAnim="@anim/slide_out"
+            app:popExitAnim="@anim/no_anim"
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
@@ -20,7 +24,11 @@
         android:label="ListFoodFragment">
         <action
             android:id="@+id/listFoodFragment_to_detailFoodFragment"
-            app:destination="@id/detailFoodFragment" />
+            app:destination="@id/detailFoodFragment"
+            app:enterAnim="@anim/slide_in"
+            app:exitAnim="@anim/no_anim"
+            app:popEnterAnim="@anim/no_anim"
+            app:popExitAnim="@anim/slide_out" />
     </fragment>
     <fragment
         android:id="@+id/detailFoodFragment"

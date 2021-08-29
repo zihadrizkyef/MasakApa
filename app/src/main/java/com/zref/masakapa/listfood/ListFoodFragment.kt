@@ -12,6 +12,7 @@ import android.widget.PopupMenu
 import androidx.appcompat.app.AlertDialog
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isGone
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.zref.core.Sort
@@ -31,8 +32,6 @@ class ListFoodFragment : BaseFragment() {
     private var searchParam = ""
     private var categoryParam = ""
     private var sortParam = Sort.ASCENDING
-
-    private lateinit var categoryAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,9 +58,7 @@ class ListFoodFragment : BaseFragment() {
     private fun initView() = with(binding) {
         setupRecyclerPadding()
 
-        categoryAdapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line)
-        mealsAdapter = FoodAdapter(listFood)
+        mealsAdapter = FoodAdapter(findNavController(), listFood)
         recyclerFood.layoutManager = GridLayoutManager(requireContext(), 2)
         recyclerFood.adapter = mealsAdapter
 
@@ -83,22 +80,12 @@ class ListFoodFragment : BaseFragment() {
             mealsAdapter.notifyDataSetChanged()
         })
 
-        viewModel.categoryList.observe(this, {
-            categoryAdapter.addAll(it)
-        })
-
         viewModel.isLoading.observe(this, {
             binding.progressBar.isGone = !it
         })
 
         viewModel.errorMessage.observe(this, {
-            val text = HtmlCompat.fromHtml(
-                "<font color=\"#ff0000\">$it</font>",
-                HtmlCompat.FROM_HTML_MODE_COMPACT
-            )
-            val snackBar = Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG)
-            snackBar.view.setBackgroundColor(Color.RED)
-            snackBar.show()
+            showErrorMessage(it, binding.root)
         })
     }
 
@@ -118,12 +105,21 @@ class ListFoodFragment : BaseFragment() {
     }
 
     private fun showCategoryPopup() {
-        AlertDialog.Builder(requireContext())
-            .setAdapter(categoryAdapter) { _, position ->
-                categoryParam = categoryAdapter.getItem(position)!!
-                viewModel.findMeals(searchParam, categoryParam, sortParam)
-            }
-            .show()
+        if (viewModel.categoryList.value != null) {
+            val categoryAdapter = ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_dropdown_item_1line
+            )
+            categoryAdapter.addAll(viewModel.categoryList.value!!)
+            AlertDialog.Builder(requireContext())
+                .setAdapter(categoryAdapter) { _, position ->
+                    categoryParam = categoryAdapter.getItem(position)!!
+                    viewModel.findMeals(searchParam, categoryParam, sortParam)
+                }
+                .show()
+        } else {
+            showErrorMessage("Category belum tidak tersedia", binding.root)
+        }
     }
 
     private fun showSortPopup() {

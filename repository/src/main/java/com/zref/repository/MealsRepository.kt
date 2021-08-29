@@ -53,4 +53,12 @@ class MealsRepository(
                 ResultSimple.Error("Gagal mengambil data")
             }
         }
+
+    fun getMealById(id: Int): ResultSimple<Meal> =
+        try {
+            ResultSimple.Success(cache.getMeals(id))
+        } catch (e: Exception) {
+            e.debugPrintStackTrace()
+            ResultSimple.Error("Gagal mengambil data")
+        }
 }

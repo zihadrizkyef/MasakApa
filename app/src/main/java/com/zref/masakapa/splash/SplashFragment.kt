@@ -23,9 +23,8 @@ class SplashFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Handler(Looper.getMainLooper())
-            .postDelayed({
-                findNavController().navigate(R.id.splashFragment_to_listFoodFragment)
-            }, 1500)
+        Handler().postDelayed({
+            findNavController().navigate(R.id.splashFragment_to_listFoodFragment)
+        }, 1500)
     }
 }

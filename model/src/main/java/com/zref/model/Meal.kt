@@ -19,5 +19,6 @@ open class Meal(
     @SerializedName("tags") var tags: String? = null,
     @SerializedName("source") var source: String? = null,
     @SerializedName("imageSource") var imageSource: String? = null,
-    @SerializedName("dateModified") var dateModified: String? = null
+    @SerializedName("dateModified") var dateModified: String? = null,
+    @SerializedName("rating") var rating: Float? = null,
 ) : RealmObject()

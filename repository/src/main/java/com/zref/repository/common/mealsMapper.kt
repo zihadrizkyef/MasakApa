@@ -6,6 +6,7 @@ import com.zref.model.Meal
 import com.zref.network.response.MealsCategoryResponse
 import com.zref.network.response.MealsListResponse
 import io.realm.RealmList
+import kotlin.random.Random
 
 fun MealsListResponse.toMealsEntity(): List<Meal> {
     val list = arrayListOf<Meal>()
@@ -24,7 +25,8 @@ fun MealsListResponse.toMealsEntity(): List<Meal> {
             it.strTags ?: "",
             it.strSource ?: "",
             it.strImageSource ?: "",
-            it.dateModified ?: ""
+            it.dateModified ?: "",
+            Random.nextDouble(5.0).toFloat()
         )
         list.add(meals)
     }

@@ -39,6 +39,17 @@ class MealsCache(private val realm: Realm) {
         return realm.copyFromRealm(result)
     }
 
+    fun getMeals(id: Int): Meal {
+        val result = realm.where(Meal::class.java)
+            .equalTo("id", id.toString())
+            .findFirst()
+        if (result != null) {
+            return realm.copyFromRealm(result)
+        } else {
+            throw NoSuchElementException()
+        }
+    }
+
     fun saveCategory(categories: List<Category>) = with(realm) {
         beginTransaction()
         copyToRealmOrUpdate(categories)
