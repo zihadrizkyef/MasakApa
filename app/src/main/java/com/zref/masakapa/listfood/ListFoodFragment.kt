@@ -1,16 +1,20 @@
 package com.zref.masakapa.listfood
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.ArrayAdapter
+import android.widget.PopupMenu
+import androidx.appcompat.app.AlertDialog
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isGone
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.zref.core.Sort
 import com.zref.core.extension.dp
 import com.zref.masakapa.BaseFragment
 import com.zref.masakapa.databinding.FragmentListFoodBinding
@@ -23,7 +27,12 @@ class ListFoodFragment : BaseFragment() {
     private lateinit var binding: FragmentListFoodBinding
     private val listFood = arrayListOf<Meal>()
 
-    private lateinit var adapter: FoodAdapter
+    private lateinit var mealsAdapter: FoodAdapter
+    private var searchParam = ""
+    private var categoryParam = ""
+    private var sortParam = Sort.ASCENDING
+
+    private lateinit var categoryAdapter: ArrayAdapter<String>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,34 +57,34 @@ class ListFoodFragment : BaseFragment() {
     }
 
     private fun initView() = with(binding) {
-        layoutToolbar.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                recyclerFood.setPadding(
-                    recyclerFood.paddingLeft,
-                    (layoutToolbar.height + 8.dp).toInt(),
-                    recyclerFood.paddingRight,
-                    recyclerFood.paddingBottom
-                )
-                layoutToolbar.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
+        setupRecyclerPadding()
 
-        adapter = FoodAdapter(listFood)
+        categoryAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line)
+        mealsAdapter = FoodAdapter(listFood)
         recyclerFood.layoutManager = GridLayoutManager(requireContext(), 2)
-        recyclerFood.adapter = adapter
+        recyclerFood.adapter = mealsAdapter
 
-        inputSearch.setOnEditorActionListener { v, actionId, event ->
-            viewModel.findMeals(inputSearch.text.toString())
+        inputSearch.setOnEditorActionListener { _, _, _ ->
+            searchParam = inputSearch.text.toString()
+            viewModel.findMeals(searchParam, categoryParam, sortParam)
             true
         }
+
+        buttonSort.setOnClickListener { showSortPopup() }
+        buttonCategory.setOnClickListener { showCategoryPopup() }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initObserver() {
         viewModel.listFood.observe(this, {
             listFood.clear()
             listFood.addAll(it!!)
-            adapter.notifyDataSetChanged()
+            mealsAdapter.notifyDataSetChanged()
+        })
+
+        viewModel.categoryList.observe(this, {
+            categoryAdapter.addAll(it)
         })
 
         viewModel.isLoading.observe(this, {
@@ -87,10 +96,48 @@ class ListFoodFragment : BaseFragment() {
                 "<font color=\"#ff0000\">$it</font>",
                 HtmlCompat.FROM_HTML_MODE_COMPACT
             )
-            val snackbar = Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG)
-            snackbar.view.setBackgroundColor(Color.RED)
-            snackbar.show()
+            val snackBar = Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG)
+            snackBar.view.setBackgroundColor(Color.RED)
+            snackBar.show()
         })
+    }
 
+    private fun setupRecyclerPadding() = with(binding) {
+        layoutToolbar.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                recyclerFood.setPadding(
+                    recyclerFood.paddingLeft,
+                    layoutToolbar.height,
+                    recyclerFood.paddingRight,
+                    recyclerFood.paddingBottom
+                )
+                layoutToolbar.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+    }
+
+    private fun showCategoryPopup() {
+        AlertDialog.Builder(requireContext())
+            .setAdapter(categoryAdapter) { _, position ->
+                categoryParam = categoryAdapter.getItem(position)!!
+                viewModel.findMeals(searchParam, categoryParam, sortParam)
+            }
+            .show()
+    }
+
+    private fun showSortPopup() {
+        val popup = PopupMenu(requireContext(), binding.buttonSort)
+        popup.menu.add("Ascending").setOnMenuItemClickListener {
+            sortParam = Sort.ASCENDING
+            viewModel.findMeals(searchParam, categoryParam, sortParam)
+            true
+        }
+        popup.menu.add("Descending").setOnMenuItemClickListener {
+            sortParam = Sort.DESCENDING
+            viewModel.findMeals(searchParam, categoryParam, sortParam)
+            true
+        }
+        popup.show()
     }
 }

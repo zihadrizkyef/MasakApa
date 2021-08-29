@@ -15,6 +15,7 @@ class ListFoodViewModel(
     val listFood = MutableLiveData<List<Meal>?>()
     val errorMessage = MutableLiveData<String>()
     val isLoading = MutableLiveData<Boolean>()
+    val categoryList = MutableLiveData<List<String>>()
 
     init {
         viewModelScope.launch {
@@ -27,6 +28,15 @@ class ListFoodViewModel(
                 is ResultSimple.Error -> {
                     isLoading.value = false
                     errorMessage.value = result.message
+                }
+            }
+
+            when(val result = mealsRepository.getCategories()) {
+                is ResultSimple.Success -> {
+                    categoryList.value = result.data
+                }
+                is ResultSimple.Error -> {
+                    errorMessage.value = "Gagal mengambil list kategori"
                 }
             }
         }

@@ -1,7 +1,9 @@
 package com.zref.repository.common
 
+import com.zref.model.Category
 import com.zref.model.Ingredient
 import com.zref.model.Meal
+import com.zref.network.response.MealsCategoryResponse
 import com.zref.network.response.MealsListResponse
 import io.realm.RealmList
 
@@ -52,4 +54,14 @@ fun MealsListResponse.Meal.generateIngredients(): RealmList<Ingredient> {
     ingredients.add(Ingredient(this.strIngredient19 ?: "", this.strMeasure19 ?: ""))
     ingredients.add(Ingredient(this.strIngredient20 ?: "", this.strMeasure20 ?: ""))
     return ingredients
+}
+
+fun MealsCategoryResponse.toCategoriesEntity(): List<Category> {
+    val list = arrayListOf<Category>()
+    this.meals?.forEach {
+        val category = Category()
+        category.name = it?.strCategory?:""
+        list.add(category)
+    }
+    return list
 }

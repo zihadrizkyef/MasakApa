@@ -1,6 +1,7 @@
 package com.zref.cache
 
 import com.zref.core.Sort
+import com.zref.model.Category
 import com.zref.model.Meal
 import io.realm.Case
 import io.realm.Realm
@@ -19,7 +20,7 @@ class MealsCache(private val realm: Realm) {
         commitTransaction()
     }
 
-    fun searchMeals(
+    fun getMeals(
         search: String = "",
         category: String = "",
         sort: Sort = Sort.ASCENDING
@@ -35,6 +36,18 @@ class MealsCache(private val realm: Realm) {
         query.sort("name", realmSort)
 
         val result = query.findAll()
+        return realm.copyFromRealm(result)
+    }
+
+    fun saveCategory(categories: List<Category>) = with(realm) {
+        beginTransaction()
+        copyToRealmOrUpdate(categories)
+        commitTransaction()
+    }
+
+    fun getCategories(): MutableList<Category> {
+        val result = realm.where(Category::class.java)
+            .findAll()
         return realm.copyFromRealm(result)
     }
 }

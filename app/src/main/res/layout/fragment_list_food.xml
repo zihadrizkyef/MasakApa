@@ -40,9 +40,10 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputSearch"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
+            android:textSize="14sp"
             android:layout_weight="1"
             android:background="@color/white"
             android:gravity="center_vertical"
@@ -52,21 +53,23 @@
             android:maxLines="1"
             android:padding="8dp" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
+            android:minWidth="0dp"
             android:text="sort"
             app:layout_constraintBottom_toBottomOf="@id/inputSearch"
             app:layout_constraintEnd_toStartOf="@id/buttonCategory"
             app:layout_constraintTop_toTopOf="@id/inputSearch" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
+            android:minWidth="0dp"
             android:text="cat"
             app:layout_constraintBottom_toBottomOf="@id/inputSearch"
             app:layout_constraintEnd_toEndOf="parent"
