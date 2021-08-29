@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.zref.masakapa.splash.SplashFragment"
+        android:label="SplashFragment" >
+        <action
+            android:id="@+id/splashFragment_to_listFoodFragment"
+            app:destination="@id/listFoodFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listFoodFragment"
+        android:name="com.zref.masakapa.listfood.ListFoodFragment"
+        android:label="ListFoodFragment" >
+        <action
+            android:id="@+id/listFoodFragment_to_detailFoodFragment"
+            app:destination="@id/detailFoodFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFoodFragment"
+        android:name="com.zref.masakapa.detailfood.DetailFoodFragment"
+        android:label="DetailFoodFragment" />
+</navigation>
