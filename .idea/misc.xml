@@ -6,6 +6,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.14814814814814814" />
         <entry key="app/src/main/res/layout/fragment_list_food.xml" value="0.14814814814814814" />
         <entry key="app/src/main/res/layout/fragment_splash.xml" value="0.14814814814814814" />
+        <entry key="app/src/main/res/layout/item_food.xml" value="0.25" />
       </map>
     </option>
   </component>
