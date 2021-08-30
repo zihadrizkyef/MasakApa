@@ -1,5 +1,5 @@
 # MASAK APA #
 
 ## Screenshot
-![Alt text](/Screenshot1.jpg)
-![Alt text](/Screenshot2.jpg)
+<img src="/Screenshot1.jpg" height="500"/><br>
+<img src="/Screenshot2.jpg" height="500"/>
